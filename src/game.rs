@@ -4,7 +4,7 @@
 //! game itself.
 
 /// The game board as an aliased type.
-type Board = Vec<Vec<char>>;
+type Board = Vec<Vec<String>>;
 
 /// A turn in the game as an Enum.
 #[derive(Debug)]
@@ -19,7 +19,7 @@ enum Turn {
 #[derive(Debug)]
 pub struct Game {
     /// The game board.
-    board: Vec<Vec<char>>,
+    board: Board,
     /// The current turn of the game.
     current_turn: Turn,
 }
@@ -40,12 +40,47 @@ impl Game {
     pub fn new() -> Game {
         Game {
             board: vec![
-                vec!['1', '2', '3'],
-                vec!['4', '5', '6'],
-                vec!['7', '8', '9'],
+                vec![String::from("1"), String::from("2"), String::from("3")],
+                vec![String::from("4"), String::from("5"), String::from("6")],
+                vec![String::from("7"), String::from("8"), String::from("9")],
             ],
             current_turn: Turn::Player,
         }
+    }
+
+
+    /// Prints the game board
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use game::Game;
+    ///
+    /// let game = Game::new();
+    ///
+    /// game.print_board()
+    ///
+    /// // You should see (including blank lines):
+    /// //
+    /// // +---+---+---+
+    /// // | 1 | 2 | 3 |
+    /// // +---+---+---+
+    /// // | 4 | 5 | 6 |
+    /// // +---+---+---+
+    /// // | 7 | 8 | 9 |
+    /// // +---+---+---+
+    /// //
+    /// ```
+    pub fn print_board(&self) {
+        let seperator = "+---+---+---+";
+
+        println!("\n{}", seperator);
+
+        for row in &self.board {
+            println!("| {} |\n{}", row.join(" | "), seperator);
+        }
+
+        print!("\n");
     }
 }
 
