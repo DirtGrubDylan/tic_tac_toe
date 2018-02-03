@@ -165,7 +165,7 @@ impl Game {
                     "X" | "O" => false,
                     _ => true,
                 }
-            },
+            }
             _ => false,
         }
     }
@@ -188,7 +188,23 @@ impl Game {
 
     /// Determines if game is won.
     fn game_is_won(&self) -> bool {
-        unimplemented!();
+        // Check lines.
+        let mut all_same_row = false;
+        let mut all_same_col = false;
+
+        for index in 0..3 {
+            all_same_row |= self.board[index][0] == self.board[index][1]
+                && self.board[index][1] == self.board[index][2];
+            all_same_col |= self.board[0][index] == self.board[1][index]
+                && self.board[1][index] == self.board[2][index];
+        }
+
+        let all_same_diag_1 = self.board[0][0] == self.board[1][1]
+            && self.board[1][1] == self.board[2][2];
+        let all_same_diag_2 = self.board[0][2] == self.board[1][1]
+            && self.board[1][1] == self.board[2][0];
+
+        all_same_row || all_same_col || all_same_diag_1 || all_same_diag_2
     }
 
     /// Determines if player wants to play again.
@@ -228,11 +244,19 @@ mod tests {
         test_game.board[2][2] = String::from("X");
 
         for test_move in 1..9 {
-            assert!(test_game.validate_player_input(&test_move.to_string()).is_ok());
+            assert!(
+                test_game
+                    .validate_player_input(&test_move.to_string())
+                    .is_ok()
+            );
         }
 
         for bad_move in 10..20 {
-            assert!(test_game.validate_player_input(&bad_move.to_string()).is_err());
+            assert!(
+                test_game
+                    .validate_player_input(&bad_move.to_string())
+                    .is_err()
+            );
         }
     }
 
@@ -260,5 +284,45 @@ mod tests {
         test_game.current_turn = Turn::Bot;
 
         assert_eq!(test_game.get_next_turn(), Turn::Player);
+    }
+
+    #[test]
+    fn test_game_is_not_won() {
+        let test_game = Game::new();
+
+        assert!(!test_game.game_is_won());
+    }
+
+    #[test]
+    fn test_game_is_won_row() {
+        let mut test_game = Game::new();
+
+        test_game.board[1][0] = String::from("O");
+        test_game.board[1][1] = String::from("O");
+        test_game.board[1][2] = String::from("O");
+
+        assert!(test_game.game_is_won());
+    }
+
+    #[test]
+    fn test_game_is_won_col() {
+        let mut test_game = Game::new();
+
+        test_game.board[0][2] = String::from("X");
+        test_game.board[1][2] = String::from("X");
+        test_game.board[2][2] = String::from("X");
+
+        assert!(test_game.game_is_won());
+    }
+
+    #[test]
+    fn test_game_is_won_diag() {
+        let mut test_game = Game::new();
+
+        test_game.board[0][2] = String::from("X");
+        test_game.board[1][1] = String::from("X");
+        test_game.board[2][0] = String::from("X");
+
+        assert!(test_game.game_is_won());
     }
 }
