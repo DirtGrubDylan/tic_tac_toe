@@ -48,6 +48,34 @@ impl Game {
         }
     }
 
+    /// Plays the game.
+    pub fn play_game(&mut self) {
+        let mut finished = false;
+
+        while !finished {
+            self.play_turn();
+
+            if self.game_is_won() {
+                self.reset();
+                finished = Self::player_is_finished();
+            }
+        }
+    }
+
+    /// Plays a turn of the game, getting moves from the player or bot.
+    fn play_turn(&mut self) {
+        self.print_board();
+
+        let (valid_token, valid_move) = match self.current_turn {
+            Turn::Player => (String::from("X"), self.get_player_move()),
+            Turn::Bot => (String::from("O"), self.get_bot_move()),
+        };
+
+        let (row, col) = Self::move_to_board_location(valid_move);
+
+        self.board[row][col] = valid_token;
+        self.current_turn = self.get_next_turn();
+    }
 
     /// Prints the game board
     ///
@@ -71,7 +99,7 @@ impl Game {
     /// // +---+---+---+
     /// //
     /// ```
-    pub fn print_board(&self) {
+    fn print_board(&self) {
         let seperator = "+---+---+---+";
 
         println!("\n{}", seperator);
@@ -81,6 +109,52 @@ impl Game {
         }
 
         print!("\n");
+    }
+
+    /// Gets move from player.
+    fn get_player_move(&self) -> u32 {
+        unimplemented!();
+    }
+
+    /// Gets move from bot.
+    fn get_bot_move(&self) -> u32 {
+        unimplemented!();
+    }
+
+    /// Determins if move is valid.
+    fn is_valid_move(&self, unchecked_move: u32) -> bool {
+        unimplemented!();
+    }
+
+    /// Turns a move integer into the respective row and column board location.
+    fn move_to_board_location(game_move: u32) -> (usize, usize) {
+        let row = (game_move - 1) / 3;
+        let col = (game_move - 1) % 3;
+
+        (row as usize, col as usize)
+    }
+
+    /// Get the next turn, either the player or bot.
+    fn get_next_turn(&self) -> Turn {
+        match self.current_turn {
+            Turn::Player => Turn::Bot,
+            Turn::Bot => Turn::Player,
+        }
+    }
+
+    /// Determines if game is won.
+    fn game_is_won(&self) -> bool {
+        unimplemented!();
+    }
+
+    /// Determines if player wants to play again.
+    fn player_is_finished() -> bool {
+        unimplemented!();
+    }
+
+    /// Resets the game.
+    fn reset(&mut self) {
+        unimplemented!();
     }
 }
 
