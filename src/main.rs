@@ -1,3 +1,7 @@
+extern crate rand;
+
+mod game;
+
 fn main() {
-    println!("Hello, world!");
+    println!("Welcome to Tic-Tac-Toe!");
 }
