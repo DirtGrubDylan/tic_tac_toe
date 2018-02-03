@@ -199,10 +199,10 @@ impl Game {
                 && self.board[1][index] == self.board[2][index];
         }
 
-        let all_same_diag_1 = self.board[0][0] == self.board[1][1]
-            && self.board[1][1] == self.board[2][2];
-        let all_same_diag_2 = self.board[0][2] == self.board[1][1]
-            && self.board[1][1] == self.board[2][0];
+        let all_same_diag_1 =
+            self.board[0][0] == self.board[1][1] && self.board[1][1] == self.board[2][2];
+        let all_same_diag_2 =
+            self.board[0][2] == self.board[1][1] && self.board[1][1] == self.board[2][0];
 
         all_same_row || all_same_col || all_same_diag_1 || all_same_diag_2
     }
@@ -214,7 +214,12 @@ impl Game {
 
     /// Resets the game.
     fn reset(&mut self) {
-        unimplemented!();
+        self.current_turn = Turn::Player;
+        self.board = vec![
+            vec![String::from("1"), String::from("2"), String::from("3")],
+            vec![String::from("4"), String::from("5"), String::from("6")],
+            vec![String::from("7"), String::from("8"), String::from("9")],
+        ];
     }
 }
 
