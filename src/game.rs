@@ -117,6 +117,8 @@ impl Game {
     fn get_player_move(&self) -> u32 {
         let mut player_input = String::new();
 
+        print!("Please enter your move (an integer between 1 and 9): ");
+
         loop {
             match io::stdin().read_line(&mut player_input) {
                 Err(_) => println!("Error reading input, try again!"),
@@ -188,7 +190,6 @@ impl Game {
 
     /// Determines if game is won.
     fn game_is_won(&self) -> bool {
-        // Check lines.
         let mut all_same_row = false;
         let mut all_same_col = false;
 
@@ -209,7 +210,14 @@ impl Game {
 
     /// Determines if player wants to play again.
     fn player_is_finished() -> bool {
-        unimplemented!();
+        let mut player_input = String::new();
+
+        print!("Would you like to play again (y/n)?:");
+
+        match io::stdin().read_line(&mut player_input) {
+            Ok(_) if player_input == "y" || player_input == "yes" => true,
+            _ => false
+        }
     }
 
     /// Resets the game.
