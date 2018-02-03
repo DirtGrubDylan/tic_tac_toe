@@ -2,6 +2,7 @@
 //!
 //! It contains an aliased type for the game board, an enum for the game turn, and a struct for the
 //! game itself.
+use rand;
 use std::io;
 
 /// The game board as an aliased type.
@@ -145,7 +146,13 @@ impl Game {
 
     /// Gets move from bot.
     fn get_bot_move(&self) -> u32 {
-        unimplemented!();
+        let mut bot_move: u32 = rand::random::<u32>() % 9 + 1;
+
+        while !self.is_valid_move(bot_move) {
+            bot_move = rand::random::<u32>() % 9 + 1;
+        }
+
+        bot_move
     }
 
     /// Determins if move is valid.
