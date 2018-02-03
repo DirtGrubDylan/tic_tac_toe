@@ -8,7 +8,7 @@ use std::io;
 type Board = Vec<Vec<String>>;
 
 /// A turn in the game as an Enum.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Turn {
     /// The player's turn.
     Player,
@@ -150,7 +150,17 @@ impl Game {
 
     /// Determins if move is valid.
     fn is_valid_move(&self, unchecked_move: u32) -> bool {
-        unimplemented!();
+        match unchecked_move {
+            1...9 => {
+                let temp_location = Self::move_to_board_location(unchecked_move);
+
+                match self.board[temp_location.0][temp_location.1].as_str() {
+                    "X" | "O" => false,
+                    _ => true,
+                }
+            },
+            _ => false,
+        }
     }
 
     /// Turns a move integer into the respective row and column board location.
@@ -188,4 +198,60 @@ impl Game {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_is_valid_move() {
+        let mut test_game = Game::new();
+
+        test_game.board[2][2] = String::from("X");
+
+        for test_move in 1..9 {
+            assert!(test_game.is_valid_move(test_move));
+        }
+
+        for bad_move in 10..20 {
+            assert!(!test_game.is_valid_move(bad_move));
+        }
+    }
+
+    #[test]
+    fn test_validate_player_input() {
+        let mut test_game = Game::new();
+
+        test_game.board[2][2] = String::from("X");
+
+        for test_move in 1..9 {
+            assert!(test_game.validate_player_input(&test_move.to_string()).is_ok());
+        }
+
+        for bad_move in 10..20 {
+            assert!(test_game.validate_player_input(&bad_move.to_string()).is_err());
+        }
+    }
+
+    #[test]
+    fn test_move_to_board_location() {
+        assert_eq!(Game::move_to_board_location(1), (0, 0));
+        assert_eq!(Game::move_to_board_location(2), (0, 1));
+        assert_eq!(Game::move_to_board_location(3), (0, 2));
+
+        assert_eq!(Game::move_to_board_location(4), (1, 0));
+        assert_eq!(Game::move_to_board_location(5), (1, 1));
+        assert_eq!(Game::move_to_board_location(6), (1, 2));
+
+        assert_eq!(Game::move_to_board_location(7), (2, 0));
+        assert_eq!(Game::move_to_board_location(8), (2, 1));
+        assert_eq!(Game::move_to_board_location(9), (2, 2));
+    }
+
+    #[test]
+    fn test_get_next_turn() {
+        let mut test_game = Game::new();
+
+        assert_eq!(test_game.get_next_turn(), Turn::Bot);
+
+        test_game.current_turn = Turn::Bot;
+
+        assert_eq!(test_game.get_next_turn(), Turn::Player);
+    }
 }
