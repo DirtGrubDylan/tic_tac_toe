@@ -9,18 +9,34 @@ type Board = Vec<Vec<char>>;
 /// A turn in the game as an Enum.
 #[derive(Debug)]
 enum Turn {
+    /// The player's turn.
     Player,
+    /// The bot's turn.
     Bot,
 }
 
 /// The game represented as a struct.
 #[derive(Debug)]
 pub struct Game {
+    /// The game board.
     board: Vec<Vec<char>>,
+    /// The current turn of the game.
     current_turn: Turn,
 }
 
 impl Game {
+    /// Constructs a `Game` object.
+    ///
+    /// The board will default to a vector of chars indicating the available moves, and the first
+    /// turn will default to the player. For fun, a user could randomize the starting player.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use game::Game;
+    ///
+    /// let game = Game::new();
+    /// ```
     pub fn new() -> Game {
         Game {
             board: vec![
