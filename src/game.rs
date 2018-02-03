@@ -2,6 +2,7 @@
 //!
 //! It contains an aliased type for the game board, an enum for the game turn, and a struct for the
 //! game itself.
+use std::io;
 
 /// The game board as an aliased type.
 type Board = Vec<Vec<String>>;
@@ -113,7 +114,33 @@ impl Game {
 
     /// Gets move from player.
     fn get_player_move(&self) -> u32 {
-        unimplemented!();
+        let mut player_input = String::new();
+
+        loop {
+            match io::stdin().read_line(&mut player_input) {
+                Err(_) => println!("Error reading input, try again!"),
+                Ok(_) => match self.validate_player_input(&player_input) {
+                    Err(err) => println!("{}", err),
+                    Ok(num) => return num,
+                },
+            }
+        }
+    }
+
+    /// Validates player input.
+    fn validate_player_input(&self, player_input: &str) -> Result<u32, String> {
+        match player_input.parse::<u32>() {
+            Err(_) => Err(String::from("Please input a valid unsigned integer!")),
+            Ok(number) => {
+                if self.is_valid_move(number) {
+                    Ok(number)
+                } else {
+                    Err(String::from(
+                        "Please input a number, between 1 and 9, not already chosen!",
+                    ))
+                }
+            }
+        }
     }
 
     /// Gets move from bot.
