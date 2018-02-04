@@ -58,9 +58,19 @@ impl Game {
             self.play_turn();
 
             if self.game_is_won() {
+                self.print_board();
+
+                match self.current_turn {
+                    Turn::Player => println!("You won!"),
+                    Turn::Bot => println!("You lost!"),
+                };
+
                 self.reset();
+
                 finished = Self::player_is_finished();
             }
+
+            self.current_turn = self.get_next_turn();
         }
     }
 
@@ -76,7 +86,6 @@ impl Game {
         let (row, col) = Self::move_to_board_location(valid_move);
 
         self.board[row][col] = valid_token;
-        self.current_turn = self.get_next_turn();
     }
 
     /// Prints the game board
@@ -115,11 +124,11 @@ impl Game {
 
     /// Gets move from player.
     fn get_player_move(&self) -> u32 {
-        let mut player_input = String::new();
-
-        print!("Please enter your move (an integer between 1 and 9): ");
-
         loop {
+            let mut player_input = String::new();
+
+            println!("\nPlease enter your move (an integer between 1 and 9): ");
+
             match io::stdin().read_line(&mut player_input) {
                 Err(_) => println!("Error reading input, try again!"),
                 Ok(_) => match self.validate_player_input(&player_input) {
@@ -132,7 +141,7 @@ impl Game {
 
     /// Validates player input.
     fn validate_player_input(&self, player_input: &str) -> Result<u32, String> {
-        match player_input.parse::<u32>() {
+        match player_input.trim().parse::<u32>() {
             Err(_) => Err(String::from("Please input a valid unsigned integer!")),
             Ok(number) => {
                 if self.is_valid_move(number) {
@@ -153,6 +162,8 @@ impl Game {
         while !self.is_valid_move(bot_move) {
             bot_move = rand::random::<u32>() % 9 + 1;
         }
+
+        println!("Bot played moved at: {}", bot_move);
 
         bot_move
     }
@@ -212,11 +223,15 @@ impl Game {
     fn player_is_finished() -> bool {
         let mut player_input = String::new();
 
-        print!("Would you like to play again (y/n)?:");
+        println!("Are you finished playing (y/n)?:");
 
         match io::stdin().read_line(&mut player_input) {
-            Ok(_) if player_input == "y" || player_input == "yes" => true,
-            _ => false
+            Ok(_) => {
+                let temp_input = player_input.to_lowercase();
+
+                temp_input.trim() == "y" || temp_input.trim() == "yes"
+            }
+            Err(_) => false
         }
     }
 
