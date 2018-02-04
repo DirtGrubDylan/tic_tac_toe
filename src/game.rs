@@ -51,6 +51,18 @@ impl Game {
     }
 
     /// Plays the game.
+    ///
+    /// The starting turn alternates after each play.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use game::Game;
+    ///
+    /// let mut game = Game::new();
+    ///
+    /// game.play_game();
+    /// ```
     pub fn play_game(&mut self) {
         let mut finished = false;
 
@@ -90,26 +102,14 @@ impl Game {
 
     /// Prints the game board
     ///
-    /// # Example
-    ///
-    /// ```
-    /// use game::Game;
-    ///
-    /// let game = Game::new();
-    ///
-    /// game.print_board()
-    ///
-    /// // You should see (including blank lines):
-    /// //
-    /// // +---+---+---+
-    /// // | 1 | 2 | 3 |
-    /// // +---+---+---+
-    /// // | 4 | 5 | 6 |
-    /// // +---+---+---+
-    /// // | 7 | 8 | 9 |
-    /// // +---+---+---+
-    /// //
-    /// ```
+    /// Prints as:
+    /// +---+---+---+
+    /// | 1 | 2 | 3 |
+    /// +---+---+---+
+    /// | 4 | 5 | 6 |
+    /// +---+---+---+
+    /// | 7 | 8 | 9 |
+    /// +---+---+---+
     fn print_board(&self) {
         let seperator = "+---+---+---+";
 
@@ -140,6 +140,10 @@ impl Game {
     }
 
     /// Validates player input.
+    ///
+    /// # Arguments
+    ///
+    /// * `player_input` - The input take from the player.
     fn validate_player_input(&self, player_input: &str) -> Result<u32, String> {
         match player_input.trim().parse::<u32>() {
             Err(_) => Err(String::from("Please input a valid unsigned integer!")),
@@ -169,6 +173,10 @@ impl Game {
     }
 
     /// Determins if move is valid.
+    ///
+    /// # Arguments
+    ///
+    /// * `unchecked_move` - A move that is yet to be validated.
     fn is_valid_move(&self, unchecked_move: u32) -> bool {
         match unchecked_move {
             1...9 => {
@@ -184,6 +192,10 @@ impl Game {
     }
 
     /// Turns a move integer into the respective row and column board location.
+    ///
+    /// # Arguments
+    ///
+    /// * `game_move` - A move from either the player or bot.
     fn move_to_board_location(game_move: u32) -> (usize, usize) {
         let row = (game_move - 1) / 3;
         let col = (game_move - 1) % 3;
